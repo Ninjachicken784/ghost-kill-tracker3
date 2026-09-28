@@ -67,3 +67,59 @@ public class KillSession {
     public int getTotalBoots()        { return totalBoots; }
     public int getTotalMillionCoins() { return totalMillionCoins; }
     public int getSessionKills()        { return sessionKills; }
+    public int getSessionSorrow()       { return sessionSorrow; }
+    public int getSessionVolta()        { return sessionVolta; }
+    public int getSessionPlasma()       { return sessionPlasma; }
+    public int getSessionBoots()        { return sessionBoots; }
+    public int getSessionMillionCoins() { return sessionMillionCoins; }
+
+    private long getTotalActiveMs() {
+        if (!running || totalStartTime < 0) return 0;
+        long now = System.currentTimeMillis();
+        long e = now - totalStartTime - totalPausedElapsed;
+        if (paused && pauseStartTime != -1) e -= (now - pauseStartTime);
+        return Math.max(e, 0);
+    }
+
+    private long getSessionActiveMs() {
+        if (!running || sessionStartTime < 0) return 0;
+        long now = System.currentTimeMillis();
+        long e = now - sessionStartTime - sessionPausedElapsed;
+        if (paused && pauseStartTime != -1) e -= (now - pauseStartTime);
+        return Math.max(e, 0);
+    }
+
+    public double getTotalKillsPerHour()   { long ms = getTotalActiveMs();   return ms < 1000 ? 0 : totalKills   / (ms / 3600000.0); }
+    public double getSessionKillsPerHour() { long ms = getSessionActiveMs(); return ms < 1000 ? 0 : sessionKills / (ms / 3600000.0); }
+
+    public double perHour(int count, boolean session) {
+        long ms = session ? getSessionActiveMs() : getTotalActiveMs();
+        return ms < 1000 ? 0 : count / (ms / 3600000.0);
+    }
+
+    public String getTotalUptime()   { return formatTime(getTotalActiveMs()); }
+    public String getSessionUptime() { return formatTime(getSessionActiveMs()); }
+
+    private String formatTime(long ms) {
+        long s = ms / 1000, h = s / 3600, m = (s % 3600) / 60, sec = s % 60;
+        if (h > 0) return h + "h " + String.format("%02d", m) + "m";
+        return m + "m " + String.format("%02d", sec) + "s";
+    }
+
+    private static final double EXP_SORROW = 1.0 / 270;
+    private static final double EXP_VOLTA  = 1.0 / 100;
+    private static final double EXP_PLASMA = 1.0 / 2000;
+    private static final double EXP_BOOTS  = 1.0 / 10000;
+    private static final double EXP_1M     = 1.0 / 150;
+
+    public double getPct(int actual, int kills, double expected) {
+        if (kills == 0) return 0;
+        return ((actual - kills * expected) / (kills * expected)) * 100.0;
+    }
+
+    public double getSorrowPct()  { return getPct(totalSorrow, totalKills, EXP_SORROW); }
+    public double getVoltaPct()   { return getPct(totalVolta,  totalKills, EXP_VOLTA); }
+    public double getPlasmaPct()  { return getPct(totalPlasma, totalKills, EXP_PLASMA); }
+    public double getBootsPct()   { return getPct(totalBoots,  totalKills, EXP_BOOTS); }
+    public double getMillionPct() { return getPct(totalMillionCoins, totalKills, EXP_1M); }
+}
