@@ -7,3 +7,6 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
+rootProject.name = 'ghost-kill-tracker'
+include('ghost-kill-tracker')
