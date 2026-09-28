@@ -13,9 +13,9 @@ jobs:
           java-version: '25'
           distribution: 'temurin'
       - name: Build with Gradle
-        run: cd ghost-kill-tracker && gradle build -p ghost-kill-tracker
+        run: gradle build
       - name: Upload JAR
         uses: actions/upload-artifact@v4
         with:
           name: ghost-kill-tracker-jar
-          path: ghost-kill-tracker/ghost-kill-tracker/build/libs/*[^sources].jar
+          path: ghost-kill-tracker/build/libs/*[^sources].jar
