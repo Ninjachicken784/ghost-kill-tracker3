@@ -1,0 +1,24 @@
+{
+  "schemaVersion": 1,
+  "id": "ghostkilltracker",
+  "version": "${version}",
+  "name": "Ghost Kill Tracker",
+  "description": "Tracks ghost kills on Hypixel SkyBlock.",
+  "authors": ["Ninjachicken784"],
+  "contact": {},
+  "license": "MIT",
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.ghostkilltracker.client.GhostKillTrackerClient"
+    ]
+  },
+  "mixins": [
+    "ghostkilltracker.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.18.0",
+    "fabric-api": "*",
+    "minecraft": "~26.1.2"
+  }
+}
